@@ -11,7 +11,7 @@
 
 A collection of libraries, a pipeline plugin, and a CDAP service for performing data
 cleansing, transformation, and filtering using a set of data manipulation instructions
-(directives). These instructions are either generated using an interative visual tool or
+(directives). These instructions are either generated using an interactive visual tool or
 are manually created.
 
   * Data Prep defines few concepts that might be useful if you are just getting started with it. Learn about them [here](wrangler-docs/concepts.md)
@@ -29,7 +29,12 @@ More [here](wrangler-docs/upcoming-features.md) on upcoming features.
     * Custom Directive Implementation Internals [here](wrangler-docs/udd-internal.md)
 
   * A new capability that allows CDAP Administrators to **restrict the directives** that are accessible to their users.
-More information on configuring can be found [here](wrangler-docs/exclusion-and-aliasing.md)
+    More information on configuring can be found [here](wrangler-docs/exclusion-and-aliasing.md)
+
+  * **Byte Size and Time Duration Parsers**: Enhanced the grammar to recognize byte size (e.g., `10KB`, `1.5MB`) and time duration (e.g., `150ms`, `2.5s`) units as tokens. These are parsed into canonical forms (bytes and nanoseconds, respectively) and can be used in directives for data transformation and aggregation.
+    * Supported byte units: `B`, `KB`, `MB`, `GB`, `TB` (case-insensitive).
+    * Supported time units: `ns`, `ms`, `s`, `m`, `h`, `d` (case-insensitive).
+    * Example: `aggregate-stats :size :time total_size_mb total_time_sec` aggregates byte sizes into megabytes and time durations into seconds.
 
 ## Demo Videos and Recipes
 
@@ -48,7 +53,7 @@ Videos and Screencasts are best way to learn, so we have compiled simple, short 
   * [SCREENCAST] [Building Data Prep from the GitHub source](https://youtu.be/pGGjKU04Y38)
   * [VOICE-OVER] [End-to-End Demo Video](https://youtu.be/AnhF0qRmn24)
   * [SCREENCAST] [Ingesting into Kudu](https://www.youtube.com/watch?v=KBW7a38vlUM)
-  * [SCREENCAST] [Realtime HL7 CCDA XML from Kafka into Time Parititioned Parquet](https://youtu.be/0fqNmnOnD-0)
+  * [SCREENCAST] [Realtime HL7 CCDA XML from Kafka into Time Partitioned Parquet](https://youtu.be/0fqNmnOnD-0)
   * [SCREENCAST] [Parsing JSON file](https://youtu.be/vwnctcGDflE)
   * [SCREENCAST] [Flattening arrays](https://youtu.be/SemHxgBYIsY)
   * [SCREENCAST] [Data cleansing with send-to-error directive](https://www.youtube.com/watch?v=aZd5H8hIjDc)
@@ -89,6 +94,7 @@ These directives are currently available:
 | [Write JSON Object](wrangler-docs/directives/write-as-json-object.md)           | Composes a JSON object based on the fields specified.            |
 | [Format as Currency](wrangler-docs/directives/format-as-currency.md)            | Formats a number as currency as specified by locale.             |
 | **Transformations**                                                    |                                                                  |
+| [Aggregate Stats](wrangler-docs/directives/aggregate-stats.md)                  | Aggregates byte sizes and time durations from columns into totals with customizable units (e.g., MB, seconds) |
 | [Changing Case](wrangler-docs/directives/changing-case.md)                      | Changes the case of column values                                |
 | [Cut Character](wrangler-docs/directives/cut-character.md)                      | Selects parts of a string value                                  |
 | [Set Column](wrangler-docs/directives/set-column.md)                            | Sets the column value to the result of an expression execution   |
@@ -140,7 +146,7 @@ These directives are currently available:
 | **Column Operations**                                                  |                                                                  |
 | [Change Column Case](wrangler-docs/directives/change-column-case.md)            | Changes column names to either lowercase or uppercase            |
 | [Changing Case](wrangler-docs/directives/changing-case.md)                      | Change the case of column values                                 |
-| [Cleanse Column Names](wrangler-docs/directives/cleanse-column-names.md)        | Sanatizes column names, following specific rules                 |
+| [Cleanse Column Names](wrangler-docs/directives/cleanse-column-names.md)        | Sanitizes column names, following specific rules                 |
 | [Columns Replace](wrangler-docs/directives/columns-replace.md)                  | Alters column names in bulk                                      |
 | [Copy](wrangler-docs/directives/copy.md)                                        | Copies values from a source column into a destination column     |
 | [Drop Column](wrangler-docs/directives/drop.md)                                 | Drops a column in a record                                       |
@@ -156,7 +162,7 @@ These directives are currently available:
 | [Stemming Tokenized Words](wrangler-docs/directives/stemming.md)                | Applies the Porter stemmer algorithm for English words           |
 | **Transient Aggregators & Setters**                                    |                                                                  |
 | [Increment Variable](wrangler-docs/directives/increment-variable.md)            | Increments a transient variable with a record of processing.     |
-| [Set Variable](wrangler-docs/directives/set-variable.md)                        | Sets a transient variable with a record of processing.     |
+| [Set Variable](wrangler-docs/directives/set-variable.md)                        | Sets a transient variable with a record of processing.           |
 | **Functions**                                                          |                                                                  |
 | [Data Quality](wrangler-docs/functions/dq-functions.md)                         | Data quality check functions. Checks for date, time, etc.        |
 | [Date Manipulations](wrangler-docs/functions/date-functions.md)                 | Functions that can manipulate date                               |
@@ -175,7 +181,6 @@ rates below are specified as *records/second*.
 | High (167 Directives) |      426      | 127,946,398 |  82,677,845,324 | 106,367.27 |
 | High (167 Directives) |      426      | 511,785,592 | 330,711,381,296 | 105,768.93 |
 
-
 ## Contact
 
 ### Mailing Lists
@@ -185,7 +190,7 @@ CDAP User Group and Development Discussions:
 * [cdap-user@googlegroups.com](https://groups.google.com/d/forum/cdap-user)
 
 The *cdap-user* mailing list is primarily for users using the product to develop
-applications or building plugins for appplications. You can expect questions from
+applications or building plugins for applications. You can expect questions from
 users, release announcements, and any other discussions that we think will be helpful
 to the users.
 
@@ -196,7 +201,6 @@ CDAP IRC Channel: [#cdap on irc.freenode.net](http://webchat.freenode.net?channe
 ### Slack Team
 
 CDAP Users on Slack: [cdap-users team](https://cdap-users.herokuapp.com)
-
 
 ## License and Trademarks
 
